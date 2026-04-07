@@ -20,9 +20,9 @@ import json, pathlib
 f = pathlib.Path('known_marketplaces.json')
 d = json.loads(f.read_text())
 d['optetron-skills-marketplace'] = {
-  'source': {'source': 'git', 'url': 'https://github.com/MaxenceBouvier/optetron-skills-marketplace.git'},
+  'source': {'source': 'github', 'repo': 'MaxenceBouvier/optetron-skills-marketplace'},
   'installLocation': str(pathlib.Path.home() / '.claude/plugins/marketplaces/optetron-skills-marketplace'),
-  'autoUpdate': True
+  'lastUpdated': '1970-01-01T00:00:00.000Z'
 }
 f.write_text(json.dumps(d, indent=2))
 print('Marketplace registered. Restart Claude Code to discover plugins.')
@@ -49,7 +49,7 @@ Skills will appear in the system-reminder skills list on next session start.
 
 ## Auto-Update
 
-With `autoUpdate: true`, Claude Code fetches the latest commits on each session start. No manual pulls needed after initial registration.
+With the `github` source type, Claude Code manages updates automatically. No manual pulls needed after initial registration.
 
 ## Publishing Changes
 
