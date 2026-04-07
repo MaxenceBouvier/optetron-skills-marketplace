@@ -1,0 +1,25 @@
+{
+  "$schema": "https://anthropic.com/claude-code/marketplace.schema.json",
+  "name": "optetron-skills-marketplace",
+  "description": "Optetron skill packs for Claude Code — agent orchestration, brainstorming workflows, and organizational roles",
+  "owner": {
+    "name": "Maxence Bouvier"
+  },
+  "plugins": [
+    {
+      "name": "agent-dashboard",
+      "description": "Agent orchestration skills: smart brainstorming with monitor tags, session management, and worker brainstorming oversight",
+      "source": "./plugins/agent-dashboard"
+    },
+    {
+      "name": "optetron-roles",
+      "description": "Organizational role skills for multi-agent orchestration: CEO, CTO, SWE, PM, CMO, Legal, Sales, SecOps",
+      "source": "./plugins/optetron-roles"
+    },
+    {
+      "name": "marketplace-tools",
+      "description": "Marketplace management: publish skill updates to GitHub",
+      "source": "./plugins/marketplace-tools"
+    }
+  ]
+}
