@@ -69,14 +69,16 @@ Adapt check frequency to the worker's phase:
 | Phase | Interval | Why |
 |---|---|---|
 | Startup / exploring context | 2 min | May hit permissions or get stuck early |
-| Asking clarifying questions | 1 min | Needs answers quickly to keep moving |
-| Proposing approaches | 1-2 min | Will ask for approval soon |
-| Presenting design | 1-2 min | Needs approval to proceed |
+| Asking clarifying questions | 30 sec | Needs answers quickly to keep moving |
+| **Proposing approaches** | **30 sec max** | Worker presents options fast — manager must evaluate and choose promptly |
+| **Presenting design sections** | **20 sec** | Worker iterates quickly — approvals should be near-instant |
 | Writing design doc / plans | 3 min | Deep writing, don't interrupt |
 | Executing subagents | 5-10 min | **DO NOT send messages** — interrupts subagents |
 | Running tests | 5-10 min | Tests take time, no action needed |
 | Idle for 5+ min | Immediate | Likely stuck, needs a nudge |
 | Idle for 30+ min | Immediate | Definitely stuck |
+
+**Key insight:** The brainstormer agent is fast at presenting approaches and design sections. The bottleneck is the manager's response time. Never set timers longer than 30s during interactive phases (approaches, design, questions).
 
 ### Implementation
 
@@ -95,12 +97,36 @@ Run with `run_in_background=true`. You'll be notified when the timer completes.
 - Don't add unnecessary caveats that create confusion
 - If you don't know the domain answer, escalate to the user
 
-### Approving phases
+### Evaluating approaches (CRITICAL — do not auto-approve)
 
-When the worker presents a design/plan and asks for approval:
+When the worker presents 2-3 approaches and recommends one:
+
+1. **Read all approaches carefully** — do NOT rubber-stamp the recommended one
+2. Evaluate each approach against the original requirements and constraints
+3. Consider trade-offs the worker may have missed (blast radius, backward compat, DRY)
+4. Pick the approach that makes most sense for the project, even if it's not the recommended one
+5. If unsure, **escalate to the user** via `send_notification`:
+   ```
+   send_notification(
+       title="Approach selection needed",
+       body="Worker 'session-name' proposes 3 approaches for X. I'm unsure which fits best — #2 optimizes for Y but #3 is simpler. Need your input.",
+       urgency="high",
+       session_id=N
+   )
+   ```
+6. Be decisive once you've thought it through: "Approach B. Proceed."
+
+**Red flags for auto-approval:**
+- You picked the recommended approach without reading the others
+- You can't explain WHY the chosen approach is better than the alternatives
+- The approaches involve trade-offs you don't have domain context for → escalate
+
+### Approving design sections
+
+When the worker presents design details section by section:
 1. Scan for obvious issues (does it match the original requirements?)
 2. Check the anti-gaslight guardrails above
-3. If it looks reasonable, approve immediately: "Looks good. Proceed."
+3. Design sections are usually correct at this stage — approve promptly: "Looks good. Proceed."
 4. Don't block on perfection — the worker will iterate
 
 ### Unsticking workers
@@ -189,11 +215,13 @@ When launching workers for brainstorming tasks, include this in the prompt:
 
 | Mistake | Fix |
 |---|---|
+| **Auto-approving the recommended approach** | Read ALL approaches, think about trade-offs, pick the best one |
+| **Setting 2-3 min timers during approach/design phases** | Use 30s max for approaches, 20s for design sections |
+| Not escalating approach decisions when unsure | Use `send_notification` to ping the user — you're a manager, not a domain expert |
 | Sending messages during subagent execution | Wait for subagent to finish, then send |
 | Rubber-stamping "all tests pass" without output | Ask to see the actual numbers |
 | Not verifying message delivery | Always check terminal after send_action |
 | Checking too frequently during deep work | Use 5-10 min intervals for execution phases |
-| Checking too infrequently during Q&A | Use 1 min intervals when worker needs answers |
+| Checking too infrequently during Q&A | Use 30s intervals when worker needs answers |
 | Accepting xfail as a fix | Challenge: is this a real known issue or avoidance? |
-| Not escalating domain questions to user | You're a manager, not a domain expert — ask |
 | Forgetting to set the next timer | Always set the next check before responding |
