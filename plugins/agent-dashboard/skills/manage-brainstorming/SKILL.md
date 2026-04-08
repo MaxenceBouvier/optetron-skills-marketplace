@@ -129,6 +129,25 @@ When the worker presents design details section by section:
 3. Design sections are usually correct at this stage — approve promptly: "Looks good. Proceed."
 4. Don't block on perfection — the worker will iterate
 
+### Phase Transitions — NEVER Skip Steps
+
+The brainstorming workflow has mandatory phases. When approving one phase, **always direct the worker to the next specific phase** — never say generic things like "proceed to implementation."
+
+| When worker completes... | You say... | You NEVER say... |
+|---|---|---|
+| Design spec | "Spec looks good. Now write an implementation plan using /superpowers:writing-plans." | "Proceed to implementation." |
+| Implementation plan | Review the plan carefully, then: "Plan approved. Execute it with /superpowers:subagent-driven-development." | "Looks good, go ahead and implement." |
+| Spec self-review | "Self-review looks clean. I'll review the spec now." (then actually review it) | "Approved. Proceed." (without reading) |
+
+**Why this matters:** Workers follow manager instructions literally. Saying "proceed to implementation" causes them to skip writing the implementation plan, skip the plan review phase, and jump straight to coding — losing the benefits of structured planning and parallel subagent execution. The plan-writing and plan-review phases exist so the manager can catch issues BEFORE code is written.
+
+**The full post-spec sequence is:**
+1. Worker writes spec → manager reviews spec
+2. Worker writes implementation plan (using `/superpowers:writing-plans`) → **manager reviews plan**
+3. Worker executes plan (using `/superpowers:subagent-driven-development`)
+
+Every arrow is a checkpoint. Never collapse steps 1→3 by saying "proceed to implementation."
+
 ### Unsticking workers
 
 Signs a worker is stuck:
@@ -215,6 +234,8 @@ When launching workers for brainstorming tasks, include this in the prompt:
 
 | Mistake | Fix |
 |---|---|
+| **Saying "proceed to implementation" after spec approval** | Always name the next phase explicitly: "Write an implementation plan using /superpowers:writing-plans" |
+| **Skipping plan review** | After the worker writes a plan, READ it and approve before execution — don't auto-approve |
 | **Auto-approving the recommended approach** | Read ALL approaches, think about trade-offs, pick the best one |
 | **Setting 2-3 min timers during approach/design phases** | Use 30s max for approaches, 20s for design sections |
 | Not escalating approach decisions when unsure | Use `send_notification` to ping the user — you're a manager, not a domain expert |
