@@ -32,6 +32,7 @@ launch_session(worktree_id=N, prompt="...", model="opus", permission_mode="defau
 - Give sessions descriptive names matching the worktree branch
 - Provide a clear, detailed prompt with full context (the session has no prior conversation history)
 - Escape backticks in prompts (known bug: backticks in double-quoted shell args trigger command substitution)
+- **For creative / design work (features, components, new functionality, behavior changes): the prompt MUST begin with the literal string `/brainstorming`.** This invokes `superpowers:brainstorming` as the first thing the worker sees, before it can skip the design gate. Do NOT embed the directive in prose — the slash command must be the first characters of the prompt. This does not apply to workers executing an already-approved plan or running mechanical tasks.
 - When referencing superpowers skills in prompts, use exact current names:
   - `superpowers:brainstorming` (NOT `brainstorm` — deprecated)
   - `superpowers:systematic-debugging` (NOT `debugging`)

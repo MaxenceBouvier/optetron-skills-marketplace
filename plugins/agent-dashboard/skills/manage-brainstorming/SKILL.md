@@ -202,13 +202,36 @@ When running multiple workers on related problems:
 - Don't merge findings prematurely — let each agent reach its own conclusion
 - Converging conclusions from independent agents = high confidence
 
-## Smart Monitor Escalations
+## Launching Brainstorming Workers
 
-When workers use the smart-brainstorming skill, their monitor sidecar may send escalation messages to you. These arrive as:
+For any creative or design work (features, components, new functionality, behavior changes),
+the manager MUST launch the worker with a prompt whose **first characters** are `/brainstorming`:
+
+```
+launch_session(
+    worktree_id=N,
+    prompt="/brainstorming <task description and context>",
+    ...
+)
+```
+
+This invokes `superpowers:brainstorming` as the very first thing the worker's session sees,
+before the worker can rationalize its way past the design gate. Do NOT bury the directive
+inside prose ("please use /brainstorming for this task") — the slash command must be
+literal and first. Workers routinely skip guidelines embedded in prompts; a leading
+slash command is mechanical and cannot be ignored.
+
+This rule applies only to creative/design launches. Workers spun up to execute an
+already-approved plan or to run mechanical tasks do not need this prefix.
+
+## Monitor Sidecar Escalations
+
+When workers are launched with a monitor sidecar (`monitor_level="full_auto"` or
+`"permissions_only"`), the monitor watches Claude Code state changes and may forward
+escalation messages to you. These arrive as:
 
 ```
 [ESCALATION] Worker '{name}' (id={id})
-Tag: [{tag}:{payload}]
 ---
 {relevant excerpt from worker output}
 ---
@@ -217,18 +240,13 @@ Tag: [{tag}:{payload}]
 For DONE notifications: `Worker '{name}' (id={id}) reports done.`
 For STUCK escalations: `Worker '{name}' (id={id}) is stuck.` followed by context.
 
-Treat these the same as if you had discovered the issue by polling — answer the question, challenge the claim, or unstick the worker.
+Escalation routing is driven mechanically by state changes (idle timeouts, permission
+prompts, session status transitions) — not by markers emitted from within worker prompts.
+This keeps the escalation chain robust even when a worker deviates from its skill
+guidelines.
 
-### Worker Skill Requirement
-
-Workers with a smart monitor attached MUST use the `smart-brainstorming` skill (not
-`brainstorming`) for design work. The smart-brainstorming skill emits `[TAG:payload]`
-markers that the monitor uses for instant triage. Without these tags, the entire smart
-resolve pipeline is inert — every event falls through to the generic `classify_and_route`
-directive, negating the speed advantage.
-
-When launching workers for brainstorming tasks, include this in the prompt:
-"Use /smart-brainstorming for this task."
+Treat an escalation the same as if you had discovered the issue by polling — answer the
+question, challenge the claim, or unstick the worker.
 
 ## Common Mistakes
 

@@ -6,7 +6,7 @@ Claude Code skill packs for agent orchestration, brainstorming workflows, and or
 
 | Plugin | Skills | Description |
 |--------|--------|-------------|
-| `agent-dashboard` | `smart-brainstorming`, `manager`, `manage-brainstorming` | Agent orchestration via the agent-dashboard MCP server |
+| `agent-dashboard` | `manager`, `manage-brainstorming` | Agent orchestration via the agent-dashboard MCP server |
 | `optetron-roles` | `role-ceo`, `role-cto`, `role-swe`, `role-pm`, `role-cmo`, `role-legal`, `role-sales`, `role-secops` | Organizational role skills for multi-agent systems |
 | `marketplace-tools` | `publish-skills` | Publish skill updates to GitHub |
 

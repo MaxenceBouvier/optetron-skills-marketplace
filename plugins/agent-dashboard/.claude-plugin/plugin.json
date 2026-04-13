@@ -1,6 +1,6 @@
 {
   "name": "agent-dashboard",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "Agent orchestration skills for the agent-dashboard MCP server",
   "author": {
     "name": "Maxence Bouvier"
