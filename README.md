@@ -12,44 +12,39 @@ Claude Code skill packs for agent orchestration, brainstorming workflows, and or
 
 ## Installation
 
-### 1. Register the marketplace
+Requires Claude Code v2.1 or later.
+
+### Quick install
 
 ```bash
-cd ~/.claude/plugins && python3 -c "
-import json, pathlib
-f = pathlib.Path('known_marketplaces.json')
-d = json.loads(f.read_text())
-d['optetron-skills-marketplace'] = {
-  'source': {'source': 'github', 'repo': 'MaxenceBouvier/optetron-skills-marketplace'},
-  'installLocation': str(pathlib.Path.home() / '.claude/plugins/marketplaces/optetron-skills-marketplace'),
-  'lastUpdated': '1970-01-01T00:00:00.000Z'
-}
-f.write_text(json.dumps(d, indent=2))
-print('Marketplace registered. Restart Claude Code to discover plugins.')
-"
+curl -fsSL https://raw.githubusercontent.com/MaxenceBouvier/optetron-skills-marketplace/main/scripts/install.sh | bash
 ```
 
-### 2. Enable plugins
+Or clone and run:
 
-In `~/.claude/settings.json`, add to `enabledPlugins`:
-
-```json
-{
-  "enabledPlugins": {
-    "agent-dashboard@optetron-skills-marketplace": true,
-    "optetron-roles@optetron-skills-marketplace": true,
-    "marketplace-tools@optetron-skills-marketplace": true
-  }
-}
+```bash
+git clone https://github.com/MaxenceBouvier/optetron-skills-marketplace.git
+cd optetron-skills-marketplace && ./scripts/install.sh
 ```
 
-### 3. Restart Claude Code
+### Manual install
 
-Skills will appear in the system-reminder skills list on next session start.
+```bash
+claude plugin marketplace add MaxenceBouvier/optetron-skills-marketplace
+claude plugin install agent-dashboard@optetron-skills-marketplace
+claude plugin install optetron-roles@optetron-skills-marketplace
+claude plugin install marketplace-tools@optetron-skills-marketplace
+```
 
-## Auto-Update
+Restart Claude Code. Skills appear in the system-reminder skills list on next session start.
 
-With the `github` source type, Claude Code manages updates automatically. No manual pulls needed after initial registration.
+## Updating
+
+Marketplace refresh is automatic on session start. To force-refresh:
+
+```bash
+claude plugin marketplace update optetron-skills-marketplace
+```
 
 ## Publishing Changes
 
