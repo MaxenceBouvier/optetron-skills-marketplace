@@ -7,19 +7,14 @@
   },
   "plugins": [
     {
-      "name": "agent-dashboard",
-      "description": "Agent orchestration skills: smart brainstorming with monitor tags, session management, and worker brainstorming oversight",
-      "source": "./plugins/agent-dashboard"
+      "name": "optetron",
+      "description": "Core skills: agent orchestration (manager, manage-brainstorming) and marketplace publishing (publish-skills)",
+      "source": "./plugins/optetron"
     },
     {
       "name": "optetron-roles",
       "description": "Organizational role skills for multi-agent orchestration: CEO, CTO, SWE, PM, CMO, Legal, Sales, SecOps",
       "source": "./plugins/optetron-roles"
-    },
-    {
-      "name": "marketplace-tools",
-      "description": "Marketplace management: publish skill updates to GitHub",
-      "source": "./plugins/marketplace-tools"
     }
   ]
 }

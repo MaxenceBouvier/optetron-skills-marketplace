@@ -5,5 +5,11 @@
   "author": {
     "name": "Maxence Bouvier"
   },
-  "keywords": ["roles", "management", "multi-agent", "orchestration", "optetron"]
+  "keywords": [
+    "roles",
+    "management",
+    "multi-agent",
+    "orchestration",
+    "optetron"
+  ]
 }

@@ -6,9 +6,8 @@ Claude Code skill packs for agent orchestration, brainstorming workflows, and or
 
 | Plugin | Skills | Description |
 |--------|--------|-------------|
-| `agent-dashboard` | `manager`, `manage-brainstorming` | Agent orchestration via the agent-dashboard MCP server |
+| `optetron` | `manager`, `manage-brainstorming`, `publish-skills` | Agent orchestration via the agent-dashboard MCP server + marketplace publishing |
 | `optetron-roles` | `role-ceo`, `role-cto`, `role-swe`, `role-pm`, `role-cmo`, `role-legal`, `role-sales`, `role-secops` | Organizational role skills for multi-agent systems |
-| `marketplace-tools` | `publish-skills` | Publish skill updates to GitHub |
 
 ## Installation
 
@@ -31,9 +30,8 @@ cd optetron-skills-marketplace && ./scripts/install.sh
 
 ```bash
 claude plugin marketplace add MaxenceBouvier/optetron-skills-marketplace
-claude plugin install agent-dashboard@optetron-skills-marketplace
+claude plugin install optetron@optetron-skills-marketplace
 claude plugin install optetron-roles@optetron-skills-marketplace
-claude plugin install marketplace-tools@optetron-skills-marketplace
 ```
 
 Restart Claude Code. Skills appear in the system-reminder skills list on next session start.
@@ -48,7 +46,7 @@ claude plugin marketplace update optetron-skills-marketplace
 
 ## Publishing Changes
 
-After editing skills, invoke `/publish-skills` in any Claude Code session (requires `marketplace-tools` plugin enabled). Or run directly:
+After editing skills, invoke `/publish-skills` in any Claude Code session (requires the `optetron` plugin enabled). Or run directly:
 
 ```bash
 cd ~/proj/optetron-skills-marketplace
