@@ -21,7 +21,7 @@ changed_plugins=()
 while IFS= read -r file; do
   if [[ "$file" == plugins/*/skills/* || "$file" == plugins/*/.claude-plugin/plugin.json ]]; then
     plugin=$(echo "$file" | cut -d/ -f2)
-    if [[ ! " ${changed_plugins[*]} " =~ " ${plugin} " ]]; then
+    if [[ ! " ${changed_plugins[*]} " == *" ${plugin} "* ]]; then
       changed_plugins+=("$plugin")
     fi
   fi
