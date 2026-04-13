@@ -34,7 +34,7 @@ launch_session(
 
 **Monitor options:**
 - `monitor_level="full_auto"` — monitor auto-approves permissions AND handles work-direction questions autonomously. Use `"permissions_only"` to only auto-approve permissions (questions escalate to you instead).
-- `monitor_permission_allow_list` — the list above covers standard Claude Code tools. Extend for MCP tools: `"...,mcp__agent-dashboard__*"`. Use `"*"` to allow everything (not recommended).
+- `monitor_permission_allow_list` — the list above covers standard Claude Code tools. To also allow MCP tools, write out the full list: `"Read,Grep,Glob,Write,Edit,Bash,NotebookEdit,mcp__agent-dashboard__*"`. Supports glob patterns. Use `"*"` to allow everything (not recommended).
 - Omit `monitor_level` entirely for very short mechanical tasks that don't need a monitor.
 
 **Prompt guidelines:**
