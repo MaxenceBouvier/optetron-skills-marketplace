@@ -17,29 +17,37 @@ Establishes the current session as a **manager** that orchestrates other agent s
 
 ## Launching Sessions
 
+Always create a dedicated worktree per task, then launch with a monitor sidecar — this is the default:
+
 ```
 create_worktree(branch="feature-name", from_ref="main")
-launch_session(worktree_id=N, prompt="...", model="opus", permission_mode="default", name="feature-name")
+launch_session(
+    worktree_id=N,
+    prompt="...",
+    model="opus",
+    permission_mode="default",
+    name="feature-name",
+    monitor_level="full_auto",
+    monitor_permission_allow_list="Read,Grep,Glob,Write,Edit,Bash,NotebookEdit"
+)
 ```
 
-To launch with an automatic monitor sidecar, add `monitor_level`:
+**Monitor options:**
+- `monitor_level="full_auto"` — monitor auto-approves permissions AND handles work-direction questions autonomously. Use `"permissions_only"` to only auto-approve permissions (questions escalate to you instead).
+- `monitor_permission_allow_list` — the list above covers standard Claude Code tools. Extend for MCP tools: `"...,mcp__agent-dashboard__*"`. Use `"*"` to allow everything (not recommended).
+- Omit `monitor_level` entirely for very short mechanical tasks that don't need a monitor.
 
-```
-launch_session(worktree_id=N, prompt="...", model="opus", permission_mode="default", name="feature-name", monitor_level="full_auto")
-```
-
-- Always create a dedicated worktree per task
-- Give sessions descriptive names matching the worktree branch
-- Provide a clear, detailed prompt with full context (the session has no prior conversation history)
+**Prompt guidelines:**
+- Give full context — the session has no prior conversation history
 - Escape backticks in prompts (known bug: backticks in double-quoted shell args trigger command substitution)
-- **For creative / design work (features, components, new functionality, behavior changes): the prompt MUST begin with the literal string `/brainstorming`.** This invokes `superpowers:brainstorming` as the first thing the worker sees, before it can skip the design gate. Do NOT embed the directive in prose — the slash command must be the first characters of the prompt. This does not apply to workers executing an already-approved plan or running mechanical tasks.
-- When referencing superpowers skills in prompts, use exact current names:
-  - `superpowers:brainstorming` (NOT `brainstorm` — deprecated)
-  - `superpowers:systematic-debugging` (NOT `debugging`)
-  - `superpowers:subagent-driven-development` (full name)
-  - `superpowers:writing-plans` / `superpowers:executing-plans`
-- After `send_action`, verify the message landed — pasted text may need Enter via tmux:
-  `TMUX="" tmux -L agent-dashboard send-keys -t <tmux_session> Enter`
+- **For creative/design work:** prompt must begin with `/brainstorming` as literal first characters
+- Use exact skill names: `superpowers:brainstorming`, `superpowers:systematic-debugging`, `superpowers:subagent-driven-development`, `superpowers:writing-plans`, `superpowers:executing-plans`
+
+**Checking monitor health:**
+```
+get_monitor_status(session_id)        # activation count, escalation count, budget usage
+list_sessions(include_monitors=True)  # monitors are hidden from list_sessions by default
+```
 
 ## MCP Tools Quick Reference
 
@@ -120,60 +128,6 @@ Include enough context in `body` that the user can decide whether to act now or 
 - Poll periodically or check on demand when the user asks
 - Watch for `idle` sessions that may be waiting for permission approval
 - Use `capture_session_output` to read what the session terminal is showing
-
-## Monitor Agents
-
-Workers can be launched with an automatic monitor sidecar that handles
-interruptions without human intervention.
-
-### Launching with a monitor
-
-```
-launch_session(
-    worktree_id=N,
-    prompt="detailed task context...",
-    model="opus",
-    permission_mode="default",
-    name="feature-auth",
-    monitor_level="full_auto"
-)
-```
-
-### Monitor levels
-
-| Level | Permissions | Work direction questions |
-|-------|-------------|------------------------|
-| `permissions_only` | Auto-approve via rule engine | Escalate to user |
-| `full_auto` | Auto-approve via rule engine | Monitor reads output and answers |
-
-### Permission allow-list
-
-By default, monitors auto-approve standard Claude Code tools (`Read,Grep,Glob,Write,Edit,Bash,NotebookEdit`).
-MCP tools are NOT auto-approved by default — add them explicitly if needed:
-`monitor_permission_allow_list="Read,Grep,Glob,Write,Edit,Bash,NotebookEdit,mcp__agent-dashboard__*"`.
-Supports glob patterns: `"mcp__*"` matches all MCP tools. Use `"*"` to allow everything (not recommended).
-
-### Checking monitor health
-
-```
-get_monitor_status(session_id)
-```
-
-Returns: activation count, escalation count, rate limit status, budget usage.
-
-### Visibility
-
-Monitors are hidden from `list_sessions` by default.
-Use `list_sessions(include_monitors=True)` to see them.
-
-### Tmux output capture
-
-```
-capture_session_output(session_id)
-```
-
-Returns cleaned terminal output (ANSI stripped, Claude chrome removed).
-Useful for reading what a worker session is currently showing.
 
 ## Recommended Launch Configuration
 
