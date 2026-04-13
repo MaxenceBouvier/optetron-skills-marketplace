@@ -1,9 +1,0 @@
-{
-  "name": "marketplace-tools",
-  "version": "1.0.0",
-  "description": "Marketplace management tools: publish skill updates to GitHub",
-  "author": {
-    "name": "Maxence Bouvier"
-  },
-  "keywords": ["marketplace", "publish", "release"]
-}
