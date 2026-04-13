@@ -5,33 +5,48 @@ set -euo pipefail
 REPO_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 cd "$REPO_ROOT"
 
-# Ensure we have staged changes or uncommitted changes to process
-if git diff --quiet && git diff --cached --quiet; then
-  echo "Nothing to release — no changes detected."
-  exit 0
-fi
-
-# Stage everything if nothing is staged yet
-if git diff --cached --quiet; then
-  git add -A
-fi
-
 # Identify which plugins have changes
 changed_plugins=()
-while IFS= read -r file; do
-  if [[ "$file" == plugins/*/skills/* || "$file" == plugins/*/.claude-plugin/plugin.json ]]; then
-    plugin=$(echo "$file" | cut -d/ -f2)
-    if [[ ! " ${changed_plugins[*]} " == *" ${plugin} "* ]]; then
+
+if git diff --quiet && git diff --cached --quiet; then
+  # Tree is clean — fall back to commit-aware mode: diff each plugin against its last release tag
+  echo "Working tree is clean — checking commits since last release tags..."
+  for plugin_dir in plugins/*/; do
+    plugin=$(basename "$plugin_dir")
+    last_tag=$(git tag -l "${plugin}-v*" | sort -V | tail -1)
+    if [[ -z "$last_tag" ]]; then
+      ref=$(git rev-list --max-parents=0 HEAD)  # initial commit
+    else
+      ref="$last_tag"
+    fi
+    if ! git diff --quiet "$ref"..HEAD -- "plugins/$plugin/"; then
       changed_plugins+=("$plugin")
     fi
+  done
+  if [[ ${#changed_plugins[@]} -eq 0 ]]; then
+    echo "Nothing to release — no changes since last release tags."
+    exit 0
   fi
-done < <(git diff --cached --name-only)
-
-if [[ ${#changed_plugins[@]} -eq 0 ]]; then
-  echo "No plugin skill changes detected in staged files."
-  echo "Staged files:"
-  git diff --cached --name-only
-  exit 1
+  echo "Commit-aware mode — changed since last tags: ${changed_plugins[*]}"
+else
+  # Staged or uncommitted changes present — use them to detect changed plugins
+  if git diff --cached --quiet; then
+    git add -A
+  fi
+  while IFS= read -r file; do
+    if [[ "$file" == plugins/*/skills/* || "$file" == plugins/*/.claude-plugin/plugin.json ]]; then
+      plugin=$(echo "$file" | cut -d/ -f2)
+      if [[ ! " ${changed_plugins[*]} " == *" ${plugin} "* ]]; then
+        changed_plugins+=("$plugin")
+      fi
+    fi
+  done < <(git diff --cached --name-only)
+  if [[ ${#changed_plugins[@]} -eq 0 ]]; then
+    echo "No plugin skill changes detected in staged files."
+    echo "Staged files:"
+    git diff --cached --name-only
+    exit 1
+  fi
 fi
 
 echo "Changed plugins: ${changed_plugins[*]}"
