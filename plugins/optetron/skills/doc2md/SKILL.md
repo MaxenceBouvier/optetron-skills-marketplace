@@ -35,12 +35,15 @@ Prints the written `.md` file path to stdout on success.
 | `--out <path>` | Write markdown to a specific output path instead of the default |
 | `--device auto\|cpu\|cuda` | Force inference device (default: `auto`) |
 | `--keep-headers-footers` | Preserve page headers and footers (stripped by default) |
+| `--caveman-style {lite,full,ultra}` | Compress output with caveman-speak (requires `ANTHROPIC_API_KEY`). Off by default. |
 
 ## Notes
 
 **First run:** docling downloads ~500 MB of models into `~/.cache/docling` on first invocation. Subsequent runs are fast.
 
 **Performance:** On a CUDA-capable host, pass `--device cuda` for significantly faster conversion.
+
+**Caveman style:** When `--caveman-style` is set, requires `ANTHROPIC_API_KEY` in the environment. Failure of the caveman stage exits 1 with no `.md` written.
 
 ## Supported Formats
 
