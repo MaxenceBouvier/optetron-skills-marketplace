@@ -1,6 +1,6 @@
 ---
 name: doc2md
-description: Use when you need to convert a PDF, DOCX, XLSX, PPTX, or HTML document into token-efficient markdown for LLM context (reading papers, reports, client briefs, specs). Produces clean markdown with tables preserved and page headers/footers stripped. Requires hq-tools installed via `uv tool install --from <optetron-hq>/tools hq-tools`.
+description: Use when you need to convert a PDF, DOCX, XLSX, PPTX, or HTML document into token-efficient markdown for LLM context (reading papers, reports, client briefs, specs). Produces clean markdown with tables preserved and page headers/footers stripped. Requires hq-tools installed via `uv tool install --from ~/proj/optetron-hq/tools hq-tools`.
 ---
 
 # doc2md
@@ -17,7 +17,7 @@ Convert documents (PDF, DOCX, XLSX, PPTX, HTML, MD) to clean markdown for LLM in
 `doc2md` must be on PATH:
 
 ```bash
-uv tool install --from <optetron-hq>/tools hq-tools
+uv tool install --from ~/proj/optetron-hq/tools hq-tools
 ```
 
 ## Usage
