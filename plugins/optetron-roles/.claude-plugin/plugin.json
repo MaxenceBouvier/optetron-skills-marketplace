@@ -1,6 +1,6 @@
 {
   "name": "optetron-roles",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "Organizational role skills for multi-agent orchestration",
   "author": {
     "name": "Maxence Bouvier"
