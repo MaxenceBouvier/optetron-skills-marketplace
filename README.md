@@ -6,7 +6,7 @@ Claude Code skill packs for agent orchestration, brainstorming workflows, and or
 
 | Plugin | Skills | Description |
 |--------|--------|-------------|
-| `optetron` | `manager`, `manage-brainstorming`, `publish-skills` | Agent orchestration via the agent-dashboard MCP server + marketplace publishing |
+| `optetron` | `manager`, `manage-brainstorming`, `publish-skills`, `doc2md`, `md2caveman` | Agent orchestration via the agent-dashboard MCP server + marketplace publishing |
 | `optetron-roles` | `role-ceo`, `role-cto`, `role-swe`, `role-pm`, `role-cmo`, `role-legal`, `role-sales`, `role-secops` | Organizational role skills for multi-agent systems |
 
 ## Installation
@@ -38,7 +38,9 @@ Restart Claude Code. Skills appear in the system-reminder skills list on next se
 
 ## Updating
 
-Marketplace refresh is automatic on session start. To force-refresh:
+Marketplace metadata refreshes automatically on session start, keeping installed plugins up to date. Note: auto-update only applies to plugins you've already installed — new plugins added to the marketplace must be installed manually with `claude plugin install`.
+
+To force-refresh:
 
 ```bash
 claude plugin marketplace update optetron-skills-marketplace
