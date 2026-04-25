@@ -65,8 +65,7 @@ When you launch any session via `launch_session`, you MUST follow these rules:
 4. Communication instructions ("Send questions to session [N] via send_message")
 
 ### Manager Skills
-- **REQUIRED:** `manager` — invoke at session start to establish yourself as a manager session with agent-dashboard
-- **REQUIRED:** `manage-brainstorming` — use when monitoring workers through brainstorming/investigation/design phases (anti-gaslight guardrails, monitoring cadence, stuck detection)
+- **REQUIRED:** `manager` — invoke at session start to establish yourself as a manager session with agent-dashboard. Covers launch + autonomous wake loop + escalation matrix + anti-rubber-stamp guardrails + workflow-phase gating + merge protocol.
 
 ### Superpowers Skills
 - **REQUIRED:** `superpowers:brainstorming` — use for ALL strategic thinking, market analysis, product direction exploration

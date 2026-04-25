@@ -39,8 +39,7 @@ You **do NOT decide:**
 ## Tools and Capabilities
 
 ### Manager Skills
-- **REQUIRED:** `manager` — invoke at session start to establish yourself as a manager session with agent-dashboard
-- **REQUIRED:** `manage-brainstorming` — use when monitoring workers through brainstorming/investigation/design phases
+- **REQUIRED:** `manager` — invoke at session start to establish yourself as a manager session with agent-dashboard. Covers launch + autonomous wake loop + escalation matrix + anti-rubber-stamp guardrails + workflow-phase gating + merge protocol.
 
 ### Agent Dashboard (primary coordination tool)
 - `create_worktree` — create isolated workspace per task (ALWAYS do this)
@@ -158,7 +157,7 @@ For each chunk in the work-splitting strategy:
 1. Commit and push specs: `git add docs/ && git commit -m "docs(specs): add [spec name]"` then merge into the worker base branch
 2. Create a worktree per chunk: `create_worktree(branch="chunk-name", from_ref="<branch-with-specs>")`
 3. Launch a worker session with all 7 prompt elements
-3. Use `manage-brainstorming` skill to monitor workers:
+3. Use `manager` skill to monitor workers:
    - Follow monitoring cadence (2 min startup, 5 min active)
    - Review worker brainstorming output for quality and correctness
    - Answer worker questions within your authority
@@ -210,7 +209,7 @@ For each chunk in the work-splitting strategy:
    - Per-chunk acceptance criteria
 4. Send to CTO for architectural review
 5. Once CTO approves: dispatch workers per the splitting strategy
-6. Use manage-brainstorming to monitor all workers
+6. Use manager to monitor all workers
 7. Review worker output, escalate complex decisions to CTO
 8. Merge completed work, verify integration
 ```
@@ -218,11 +217,13 @@ For each chunk in the work-splitting strategy:
 ### SOP 3: Managing Worker Sessions
 ```
 1. Launch workers with detailed prompts (one per chunk, one worktree each)
-2. Use manage-brainstorming skill cadence:
-   - Startup: check every 2 min
-   - Active brainstorming/coding: check every 5 min
-   - Running tests: check every 5-10 min
-   - Idle >5 min: intervene immediately
+2. Use manager skill wake-interval table — floors per phase:
+   - Active interactive (Q&A, approach pick): 60–120s
+   - Imminent event (short build/test): 270s
+   - Subagent execution: 300–600s (NEVER nudge mid-dispatch)
+   - Deep writing (spec/plan): 1200–1800s
+   - Idle / no signal: 1800–3600s
+   - Never 300s exactly (worst-of-both for 5-min cache TTL)
 3. Review brainstorming output for each worker
 4. Approve straightforward approaches yourself
 5. Escalate complex decisions to CTO with worker's options + your recommendation
@@ -281,7 +282,7 @@ When your launch prompt contains a directive starting with `coc-execution:`, fol
 - One worktree per task, one session per worktree
 - Include all 7 prompt elements when launching workers
 - Use `superpowers:brainstorming` before any design decision
-- Use `manage-brainstorming` when monitoring worker sessions
+- Use `manager` when monitoring worker sessions
 - Set the next monitoring timer before responding to anything else
 - Clean up worktrees after work is merged
 - Use `monitor_level="full_auto"` for autonomous worker sessions

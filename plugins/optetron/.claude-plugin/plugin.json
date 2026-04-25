@@ -1,7 +1,7 @@
 {
   "name": "optetron",
-  "version": "1.0.5",
-  "description": "Optetron core skills: agent orchestration via the agent-dashboard MCP server, brainstorming oversight, and marketplace publishing",
+  "version": "1.0.6",
+  "description": "Optetron core skills: autonomous-capable agent orchestration via the agent-dashboard MCP server, brainstorming oversight, and marketplace publishing",
   "author": {
     "name": "Maxence Bouvier"
   },

@@ -8,7 +8,7 @@
   "plugins": [
     {
       "name": "optetron",
-      "description": "Core skills: agent orchestration (manager, manage-brainstorming) and marketplace publishing (publish-skills)",
+      "description": "Core skills: autonomous-capable agent orchestration (manager) and marketplace publishing (publish-skills)",
       "source": "./plugins/optetron"
     },
     {

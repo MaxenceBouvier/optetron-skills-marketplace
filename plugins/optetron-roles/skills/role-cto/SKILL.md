@@ -36,8 +36,7 @@ You **do NOT decide:**
 ## Tools and Capabilities
 
 ### Manager Skills
-- **REQUIRED:** `manager` — invoke at session start to establish yourself as a manager session with agent-dashboard
-- **REQUIRED:** `manage-brainstorming` — use when monitoring workers through brainstorming/investigation/design phases (anti-gaslight guardrails, monitoring cadence, stuck detection)
+- **REQUIRED:** `manager` — invoke at session start to establish yourself as a manager session with agent-dashboard. Covers launch + autonomous wake loop + escalation matrix + anti-rubber-stamp guardrails + workflow-phase gating + merge protocol.
 
 ### Agent Dashboard (primary orchestration tool)
 - `launch_session` / `stop_session` — spin up or shut down worker sessions
