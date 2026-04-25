@@ -76,7 +76,7 @@ End the loop only when: pipeline complete (all worker branches merged + user not
 
 | Worker phase | Floor | Ceiling | Why |
 |---|---|---|---|
-| Active interactive (worker presenting approach / answering) | 60s | 120s | Cache warm, fast-loop |
+| Active interactive (worker presenting approach / answering) | 30s | 60s | Cache warm, fast-loop; manager response time is the bottleneck |
 | Imminent event (test run, short build) | 270s | 270s | One cache cycle |
 | Deep writing (spec/plan, no subagent) | 1200s | 1800s | Don't interrupt |
 | **Subagent execution (worker dispatched sub-agent)** | **300s** | **600s** | Sub-agents run several minutes; corruption risk if interrupted |

@@ -218,7 +218,7 @@ For each chunk in the work-splitting strategy:
 ```
 1. Launch workers with detailed prompts (one per chunk, one worktree each)
 2. Use manager skill wake-interval table — floors per phase:
-   - Active interactive (Q&A, approach pick): 60–120s
+   - Active interactive (Q&A, approach pick): 30–60s
    - Imminent event (short build/test): 270s
    - Subagent execution: 300–600s (NEVER nudge mid-dispatch)
    - Deep writing (spec/plan): 1200–1800s
