@@ -152,3 +152,31 @@ See `report-template.md` for the verbatim scaffold.
 5. **Notify user.** `send_notification(urgency="low", body=<deploy-ready note + report path>)`.
 6. **Do NOT auto-deploy.** Production deploy is user-only.
 7. `stop_session` (manager).
+
+## Hard rules
+
+Manager-side standing orders for the duration of the campaign. Numbered for reference in wake-log entries.
+
+1. **Never autonomous prod deploy.** `config.deploy_guardrails.prod_deploy_cmd` is user-only. Phase ends at green-on-`main` + deploy-ready note in report; user runs the deploy.
+2. **Never bump frozen submodules** unless the issue explicitly requires it; surface the reason in the spec for manager approval if forced.
+3. **Targeted tests during iteration** (`<config.stack.targeted_test>`); full suite only at green gate.
+4. **Conventional Commits** + lint clean + strict typing on every commit. Pre-commit hooks must pass — never `--no-verify`.
+5. **Dashes in branch names, never dots** (tmux parses `session.window`). Verify before `create_worktree`.
+6. **ff-merge per phase**: rebase worker onto current `main` if drifted → ff-merge → push. Non-ff / conflict / destructive → escalate per `manager` matrix.
+7. **Anti-rubber-stamp** (inherited from `manager`): read ALL options worker presents; section-by-section F-flag review; worker pushback only with primary-source evidence.
+8. **Anti-laziness in option-picking (manager-side):** when the worker presents 2–3 options, do NOT default to the recommended one. Read every option in full. Pick the highest long-term code-quality and UX coherence option, even if it requires more worker effort. Worker-side coding discipline is enforced by `superpowers:subagent-driven-development` — not duplicated here.
+9. **Phase-aware wake cadence**: switch the moment sub-phase transitions, don't wait the full tick. Never 300s. Never set 90–120s during subagent execution.
+10. **No human-in-the-loop checks if `config.reachability.user_reachable=false`.** Anything requiring "ask the user to look" replaced with automated assertion (chrome-devtools MCP / integration test / curl). If `user_reachable=true`, manager may notify and pause.
+11. **Manager↔worker exchanges file-based or text-based only.** Image files (PNG / SVG / screenshots / committed mermaid renders) are fine — manager reads them. ASCII / markdown text diagrams are fine. Visual companion server (live browser-driven mockups via `superpowers:brainstorming` companion mode) is forbidden — manager cannot interact with it; workers must decline the companion when offered.
+12. **Frontend-design skill mandatory** for any visual/UI work (web projects only — gated by `config.acceptance_verification.method`).
+13. **Escalation on doubt**: user unreachable → call `advisor()` with ultrathink and continue. User reachable → escalate per `manager` matrix.
+14. **Issue closure required**: every merged phase ends with issue-source close (`gh issue close` / Linear API / etc.) + citing comment. No orphaned issues — a merged-but-still-open issue is a bug.
+15. **Standing-rule supremacy** (from `manager`): pre-authorized escalation triggers fire even in autonomous mode — they're standing orders, not interruptions.
+16. **Auto-mode does NOT skip brainstorming interview / design steps.** Worker launch prompt explicitly overrides this; manager rejects worker output that skipped them.
+17. **Model overrides via `megatask.config.md` only.** Worker launch template substitutes from config. Manager does not improvise model choices mid-campaign.
+
+## Support files (in this skill directory)
+
+- `worker-launch-template.md` — verbatim worker launch prompt with `{{PLACEHOLDERS}}`. Manager copies it, substitutes placeholders from `config`, sends as the worker's first message after `launch_session`.
+- `report-template.md` — manager report file scaffold. Copied once at pre-flight to `<repo-root>/megatask-report.md`.
+- `config-schema.md` — schema + annotated example for `docs/superpowers/megatask.config.md`. Read at config-bootstrap time when a project does not yet have a config file.
