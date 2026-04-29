@@ -107,3 +107,48 @@ Inherits from `optetron:manager` (5-min prompt-cache TTL, never 300s). Megatask 
 9. **Close the issue.** As soon as the merge is pushed, the manager MUST close the corresponding issue: `gh issue close {N} --comment "Fixed in <merge-sha>. Acceptance verified: <checklist>."` (or the equivalent close call for non-GH issue sources). No orphaned issues — an unmerged issue is acceptable, a merged-but-still-open issue is a bug.
 10. `stop_session(sid)`. Worktree cleanup deferred to closure sweep.
 11. Append phase-complete entry to `megatask-report.md` (merge sha, close-comment link, screenshot/test artifacts paths) and move to next issue.
+
+## Anti-laziness in option-picking (manager-side discipline)
+
+When the worker presents 2–3 options for a design choice, **read every option in full**. The worker's recommended option is frequently the laziest / fastest-to-ship — that bias is structural, not a worker failure. Your job is to pick the option with the highest long-term code-quality and UX coherence, even if it requires more worker effort.
+
+Concretely:
+- Read approach #1, #2, #3 carefully, in full. Do not skim non-recommended options.
+- Invert worker framing. "A is fastest, B is cleaner" → default to B unless A has concrete evidenced reason. "C is over-engineered" from the worker often translates to "C is correct, I don't want to write it."
+- Demand primary-source evidence for the worker's recommendation: file/line citation, failing test, screenshot. "Standard practice" / "this is how X library does it" / "I think" is not evidence.
+- Section-by-section spec review with F-flag identifiers (`F1`, `F2`, …). Do NOT collapse — workers bury issues in collapsed sections.
+
+**Worker-side coding discipline** — no hardcoded magic values, no `as any` / `// @ts-expect-error` / `// eslint-disable-*`, no `!important`, no copy-paste when reuse is feasible, no `TODO clean up later` / `FIXME` in committed code, accessibility (`prefers-reduced-motion`) honored — **is enforced by `superpowers:subagent-driven-development`**, not by megatask. Megatask layers on top; it does not duplicate.
+
+## Auto-mode brainstorming override
+
+Workers running in auto mode (Claude Code opus + auto-approve permissions + monitor sidecar) tend to barrel through the brainstorming question session and design-proposal step, defaulting to "auto means proceed". This is a campaign-killer — without the question session and the manager's option-pick, every worker ships its own laziest recommendation.
+
+The worker launch prompt (`worker-launch-template.md`) contains a **CRITICAL** block instructing the worker that auto-mode does NOT skip the brainstorming question session or the design proposal — it only auto-executes already-decided steps. The manager rejects worker output that skipped them.
+
+When dispatching a worker, **never edit out** the auto-mode override block from the launch template. If a worker still skips the question session, the correct action is to reset the worker's worktree and re-dispatch with a sharper directive — not to accept the skipped work and "review the spec extra carefully".
+
+## Manager report file
+
+`megatask-report.md` lives at the project repo root. Initialized from `report-template.md` (sibling of this SKILL.md) at pre-flight. Updated on **every** wake — even short polling wakes get a one-line tick entry (`tick: still on issue-2 spec-writing, no change`). The trail must be dense and resumable: a fresh post-compaction agent must be able to resume the campaign from this file alone.
+
+Mandatory sections:
+1. **Post-compaction continuity entry point** (read first by any fresh resuming agent).
+2. **Mandate.**
+3. **Decisions locked at kickoff** (immutable for the duration of the campaign).
+4. **Phase status table.**
+5. **Wake log** (append-only).
+6. **Current state at last checkpoint** (rebuild every wake).
+7. **Per-phase launch prompt** (verbatim, copy-paste-ready).
+
+See `report-template.md` for the verbatim scaffold.
+
+## Closure sweep (after queue empty)
+
+1. Final green: `<lint> && <test> && <build>` on `main`.
+2. **Full automated acceptance regression** if applicable to the project type. For web: `chrome-devtools` MCP walks every route, screenshots at multiple viewports, console-clean check on each, saves to `<artifact_dir>/final/`. For CLI / library / API: full integration suite + smoke run. Manager reads each artifact itself — no human in the loop.
+3. **Worktree cleanup.** Call `cleanup_merged_worktrees` via the agent-dashboard MCP server (with confirmation token).
+4. Append `ALL N ISSUES SHIPPED` entry to `megatask-report.md` — merge-SHA list, summary of what changed.
+5. **Notify user.** `send_notification(urgency="low", body=<deploy-ready note + report path>)`.
+6. **Do NOT auto-deploy.** Production deploy is user-only.
+7. `stop_session` (manager).
