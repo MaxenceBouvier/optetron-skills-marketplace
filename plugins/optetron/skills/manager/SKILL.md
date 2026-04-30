@@ -38,6 +38,8 @@ launch_session(
 )
 ```
 
+> **`permission_mode` is the literal string `"auto"`.** Not `"acceptEdits"` (auto-approves Edit/Write/NotebookEdit only — Bash + MCP still prompt) and not `"bypassPermissions"` (skips all gating, no allowlist). The `mcp__agent-dashboard__launch_session` schema's `e.g.` list does not include `"auto"`, but it is supported and is the value this skill assumes. After dispatch, verify the worker's status line reads `⏵⏵ auto mode on (shift+tab to cycle)` — `⏵⏵ accept edits on` means wrong mode, kill and relaunch.
+
 **Hard rules:**
 
 - One dedicated worktree per session.
@@ -239,7 +241,7 @@ For overnight/away escalations, end the body with "no action needed until you're
 | session detail | `get_session(sid)` |
 | capture pane | `capture_session_output(sid)` |
 | create worktree | `create_worktree(branch, from_ref)` |
-| launch worker | `launch_session(worktree_id, prompt, model, permission_mode, name, monitor_level, monitor_permission_allow_list)` |
+| launch worker | `launch_session(worktree_id, prompt, model, permission_mode, name, monitor_level, monitor_permission_allow_list)` — `permission_mode` is the **literal `"auto"`**, NOT `"acceptEdits"` / `"bypassPermissions"` (schema's `e.g.` list omits it) |
 | send text | `send_action(sid, "send", text)` → ALWAYS tmux Enter follow-up |
 | approve permission | `send_action(sid, "approve")` — ONLY tool-permission prompts, NEVER bypassPermissions confirm |
 | deny permission | `send_action(sid, "deny")` |

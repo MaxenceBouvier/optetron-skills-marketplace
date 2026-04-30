@@ -16,6 +16,8 @@ You are working on **{{ISSUE_REF}}** of {{PROJECT_NAME}}. Repo at this worktree'
 
 ## Auto-mode override (CRITICAL — read this before doing anything else)
 
+<!-- Manager: this block only applies when the dispatch literal is `permission_mode="auto"`. `"acceptEdits"` and `"bypassPermissions"` are NOT auto mode and the override below will not produce the intended behavior. Verify the worker's status line shows `⏵⏵ auto mode on` after launch. -->
+
 You are running in auto mode. Auto mode does NOT skip the brainstorming question session or the design proposal step. Auto mode only auto-executes already-decided steps.
 
 You MUST:
@@ -88,6 +90,7 @@ Begin.
 ## Notes for the manager substituting placeholders
 
 - If a placeholder has no value in `config` (e.g. `{{FROZEN_SUBMODULES}}` for a project without submodule constraints), substitute the literal string `none` rather than leaving the `{{...}}` token in the worker's prompt.
+- Dispatch with `permission_mode="auto"` (literal string). `"acceptEdits"` and `"bypassPermissions"` are NOT auto mode — the `## Auto-mode override` block assumes the worker is actually in auto mode and is meaningless otherwise. The `launch_session` schema's `e.g.` list omits `"auto"` but it is supported. After launch, confirm the worker's status line reads `⏵⏵ auto mode on (shift+tab to cycle)`; `⏵⏵ accept edits on` means wrong mode — kill and relaunch.
 - Never edit out the `## Auto-mode override` block — it is the single most important defense against workers skipping the brainstorming question session.
 - Never edit out the `## Models` block — that is the single source of truth for the worker's subagent dispatch.
 - The block is intentionally written so a worker can just copy the model values into `Agent` tool calls without further interpretation.

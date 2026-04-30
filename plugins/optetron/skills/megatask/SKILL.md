@@ -83,6 +83,8 @@ Inherits from `optetron:manager` (5-min prompt-cache TTL, never 300s). Megatask 
 
 ## Worker dispatch protocol (per-issue loop, runs until queue empty)
 
+> **`permission_mode` is the literal string `"auto"`.** Not `"acceptEdits"` (auto-approves Edit/Write/NotebookEdit only — Bash + MCP still prompt) and not `"bypassPermissions"` (skips all gating, no allowlist — wrong default). The `mcp__agent-dashboard__launch_session` schema's `e.g.` list (`"default"`, `"acceptEdits"`, `"bypassPermissions"`) is incomplete; `"auto"` is supported and is the mode megatask workers require. After dispatch, verify the worker's status line reads `⏵⏵ auto mode on (shift+tab to cycle)` — `⏵⏵ accept edits on` means wrong mode, kill and relaunch.
+
 1. `create_worktree(branch=<config.branch_naming.pattern with {N} substituted>, from_ref="main")`.
 2. `launch_session(worktree_id, prompt=<filled worker template>, model=config.models.worker, permission_mode="auto", monitor_level="permissions_only", name="<issue-{N}>")`. Branch and session names: dashes only, never dots.
 3. Inject the filled worker launch prompt via `send_message` followed by tmux Enter (see `manager` skill for the exact pattern). Verify via `capture_session_output` — `[Pasted text …]` means not submitted.
