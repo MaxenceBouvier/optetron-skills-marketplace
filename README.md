@@ -6,7 +6,7 @@ Claude Code skill packs for agent orchestration, brainstorming workflows, and or
 
 | Plugin | Skills | Description |
 |--------|--------|-------------|
-| `optetron` | `manager`, `publish-skills`, `doc2md`, `md2caveman` | Autonomous-capable agent orchestration via the agent-dashboard MCP server + marketplace publishing |
+| `optetron` | `manager`, `publish-skills`, `doc2md`, `md2caveman`, `harness-setup` | Autonomous-capable agent orchestration via the agent-dashboard MCP server + marketplace publishing + Claude harness setup for existing repos |
 | `optetron-roles` | `role-ceo`, `role-cto`, `role-swe`, `role-pm`, `role-cmo`, `role-legal`, `role-sales`, `role-secops` | Organizational role skills for multi-agent systems |
 
 ## Installation
